@@ -11,7 +11,6 @@ import (
 	_ "github.com/lib/pq"
 )
 
-// var options *pg.Options
 var db *sql.DB
 var once sync.Once
 
@@ -24,7 +23,8 @@ func init() {
 		var err error
 		db, err = sql.Open("postgres", psqlInfo)
 		if err != nil {
-			panic(err)
+			log.Fatal(fmt.Sprintf("dbConnection - init: %s", err))
+			panic(fmt.Sprintf("dbConnection - init: %s", err))
 		}
 		log.Println("CONNECTED TO DATABASE")
 
@@ -49,14 +49,14 @@ type DatabaseConfiguration struct {
 }
 
 func readConfFile() DatabaseConfiguration {
-	file, _ := os.Open("db-conf.json")
+	file, _ := os.Open("back-end/db-conf.json")
 	defer file.Close()
 	decoder := json.NewDecoder(file)
 	configuration := DatabaseConfiguration{}
 	err := decoder.Decode(&configuration)
 	if err != nil {
-		log.Fatal(err)
-		panic(err)
+		log.Fatal(fmt.Sprintf("dbConnection - readConfFile: %s", err))
+		panic(fmt.Sprintf("dbConnection - readConfFile: %s", err))
 	}
 	return configuration
 }

@@ -19,18 +19,26 @@ func (a *Author) Save(db *sql.DB) bool {
 	return err != nil
 }
 
-/*
-var row struct {
-    age  int
-    name string
-}
-err = db.QueryRow("SELECT|people|age,name|age=?", 3).Scan(&row.age, &row.name)
- */
 func FetchAuthorById(db *sql.DB, id int, author *Author) {
 	err := db.QueryRow(`SELECT id, name, created_at, updated_at FROM author WHERE id = $1`, id).Scan(&author.ID, &author.Name, &author.CreatedAt, &author.UpdatedAt)
 	if err != nil {
 		log.Fatalln(err)
 	}
+}
+
+func FetchAuthors(db *sql.DB, skip int, limit int) []Author {
+	var authors []Author
+	rows, err := db.Query(`SELECT id, name FROM author ORDER BY name LIMIT $1 OFFSET $2`, limit, skip)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer rows.Close()
+	for rows.Next() {
+		var author Author
+		rows.Scan(&author.ID, &author.Name)
+		authors = append(authors, author)
+	}
+	return authors
 }
 
 func CreateAuthorTable(db *sql.DB) {

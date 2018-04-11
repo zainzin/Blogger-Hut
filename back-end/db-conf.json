@@ -1,7 +1,7 @@
 {
   "address": "localhost",
   "port": 5432,
-  "database": "test",
+  "database": "bloggers-hut",
   "username": "test",
   "password": "test"
 }

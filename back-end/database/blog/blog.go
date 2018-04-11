@@ -20,8 +20,7 @@ func (b *Blog) Save(db *sql.DB) bool {
 	_, err := db.Exec(sqlStatement, b.Title, b.Body)
 	return err != nil
 }
-// SELECT|people|age,name|age=?"
-// SELECT|blog|id, title, body, created_at, updated_at|id = ?
+
 func FetchBlogById(db *sql.DB, id int, blog *Blog) {
 	err := db.QueryRow(`SELECT id, title, body, created_at, updated_at FROM blog WHERE id = $1`, id).Scan(&blog.ID,
 		&blog.Title, &blog.Body, &blog.CreatedAt, &blog.UpdatedAt)
@@ -38,18 +37,13 @@ func FetchRecentTenBlogs(db *sql.DB) ([]Blog, error) {
 	}
 	defer rows.Close()
 	var blogs []Blog
-	var id int
-	var title string
-	var body string
-	var createdAt time.Time
-	var updatedAt time.Time
 	for rows.Next() {
-		err = rows.Scan(&id, &title, &body, &createdAt, &updatedAt)
+		var blog Blog
+		err = rows.Scan(&blog.ID, &blog.Title, &blog.Body, &blog.CreatedAt, &blog.UpdatedAt)
 		if err != nil {
 			panic(err)
 		}
-		b := Blog{id, title, body, createdAt, updatedAt}
-		blogs = append(blogs, b)
+		blogs = append(blogs, blog)
 	}
 	err = rows.Err()
 	if err != nil {
