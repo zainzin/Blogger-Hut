@@ -5,7 +5,8 @@ import (
 	"encoding/json"
 	"log"
 	"sync"
-	blog "../database/blog"
+	"../database/blog"
+	"../database/author"
 	"fmt"
 	"database/sql"
 	_ "github.com/lib/pq"
@@ -34,10 +35,8 @@ func init() {
 		}
 
 		blog.CreateBlogTable(db)
-		//model.CreateAuthorTable(db)
+		author.CreateAuthorTable(db)
 	})
-
-	// defer db.Close()
 }
 
 type DatabaseConfiguration struct {
@@ -63,4 +62,8 @@ func readConfFile() DatabaseConfiguration {
 
 func GetConnection() *sql.DB {
 	return db
+}
+
+func CloseConnection() error {
+	return db.Close()
 }

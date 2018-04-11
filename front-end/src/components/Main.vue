@@ -1,11 +1,12 @@
 <template>
-  <div class="hello">
+  <div>
     <h1>{{ msg }}</h1>
     <router-link to="/authors">Authors</router-link>
   </div>
 </template>
 
 <script>
+
 export default {
   name: 'Main',
   data () {
