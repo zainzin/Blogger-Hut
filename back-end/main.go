@@ -12,14 +12,18 @@ import (
 	"os/signal"
 	"syscall"
 	"fmt"
+	"github.com/gorilla/handlers"
 )
 
 func main() {
 	router := mux.NewRouter().StrictSlash(true)
 	router.HandleFunc("/recent-blogs", blogRoute.BlogIndex)
 	router.HandleFunc("/blog/{blogId}", blogRoute.OneBlog)
+	router.HandleFunc("/blogs", blogRoute.AllBlogs)
 	router.PathPrefix("/").Handler(http.FileServer(http.Dir("./static/")))
-	log.Println(http.ListenAndServe(":3000", router))
+
+	log.Println(http.ListenAndServe(":3000", handlers.CORS(handlers.AllowedHeaders([]string{"X-Requested-With", "Content-Type", "Authorization"}),
+		handlers.AllowedMethods([]string{"GET", "POST", "PUT", "HEAD", "OPTIONS"}), handlers.AllowedOrigins([]string{"*"}))(router)))
 
 	go func() {
 		runtime.SetFinalizer(router, func() {

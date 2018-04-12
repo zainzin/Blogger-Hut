@@ -7,6 +7,7 @@
 
 <script>
   import Navbar from './components/Navbar'
+  import 'vuejs-noty/dist/vuejs-noty.css'
 export default {
   name: 'App',
   components: {Navbar}

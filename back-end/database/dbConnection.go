@@ -48,7 +48,7 @@ type DatabaseConfiguration struct {
 }
 
 func readConfFile() DatabaseConfiguration {
-	file, _ := os.Open("back-end/db-conf.json")
+	file, _ := os.Open("db-conf.json")
 	defer file.Close()
 	decoder := json.NewDecoder(file)
 	configuration := DatabaseConfiguration{}

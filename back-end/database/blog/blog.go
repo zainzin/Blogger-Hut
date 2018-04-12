@@ -4,6 +4,7 @@ import (
 	"time"
 	"database/sql"
 	"log"
+	"fmt"
 )
 
 type Blog struct {
@@ -27,6 +28,31 @@ func FetchBlogById(db *sql.DB, id int, blog *Blog) {
 	if err != nil {
 		log.Fatalln(err)
 	}
+}
+
+func FetchBlogs(db *sql.DB, skip int, limit int) ([]Blog, error, int) {
+	sqlQuery := fmt.Sprintf(`SELECT id, title, body, created_at, updated_at, tCountBlogs.CountBlogs AS TotalRows
+	FROM blog CROSS JOIN (SELECT Count(*) AS CountBlogs FROM blog) AS tCountBlogs ORDER BY updated_at OFFSET %d ROWS FETCH NEXT %d ROWS ONLY;`, skip, limit)
+	rows, err := db.Query(sqlQuery)
+	if err != nil {
+		log.Fatalln(err)
+	}
+	var totalRows int
+	defer rows.Close()
+	var blogs []Blog
+	for rows.Next() {
+		var blog Blog
+		err = rows.Scan(&blog.ID, &blog.Title, &blog.Body, &blog.CreatedAt, &blog.UpdatedAt, &totalRows)
+		if err != nil {
+			panic(err)
+		}
+		blogs = append(blogs, blog)
+	}
+	err = rows.Err()
+	if err != nil {
+		panic(err)
+	}
+	return blogs, err, totalRows
 }
 
 func FetchRecentTenBlogs(db *sql.DB) ([]Blog, error) {
