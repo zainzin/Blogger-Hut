@@ -56,7 +56,7 @@ func FetchBlogs(db *sql.DB, skip int, limit int) ([]Blog, error, int) {
 }
 
 func FetchRecentTenBlogs(db *sql.DB) ([]Blog, error) {
-	sqlQuery := `SELECT id, title, body, created_at, updated_at FROM blog ORDER BY updated_at LIMIT 10`
+	sqlQuery := `SELECT id, title, body, created_at, updated_at FROM blog ORDER BY updated_at DESC LIMIT 10`
 	rows, err := db.Query(sqlQuery)
 	if err != nil {
 		log.Fatalln(err)

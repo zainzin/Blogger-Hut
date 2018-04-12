@@ -66,7 +66,6 @@
             this.blogs = data.Blogs
             this.totalBlogs = Math.ceil(data.TotalRows / 10)
             this.currentPage = data.CurrentPage
-            console.log(this.currentPage)
           })
           .catch((err) => this.$noty.error(err))
       }
