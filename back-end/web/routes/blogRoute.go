@@ -10,11 +10,6 @@ import (
 )
 
 func BlogIndex(w http.ResponseWriter, r *http.Request) {
-	b := blog.Blog{
-		Title: "test",
-		Body:  "tester",
-	}
-	b.Save(db.GetConnection())
 	blogs, err := blog.FetchRecentTenBlogs(db.GetConnection())
 	if err != nil {
 		json.NewEncoder(w).Encode(struct {
@@ -65,4 +60,26 @@ func AllBlogs(w http.ResponseWriter, r *http.Request) {
 	}
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(resp)
+}
+
+func CreateBlog(w http.ResponseWriter, r *http.Request) {
+	decoder := json.NewDecoder(r.Body)
+
+	var b blog.Blog
+	err := decoder.Decode(&b)
+	if err != nil {
+		panic(err)
+	}
+	defer r.Body.Close()
+
+	isError := b.Save(db.GetConnection())
+
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(struct {
+		Blog blog.Blog
+		Error bool
+	}{
+		Blog:b,
+		Error:isError,
+	})
 }

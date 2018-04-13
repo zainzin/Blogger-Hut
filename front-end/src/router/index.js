@@ -4,6 +4,7 @@ import Main from '@/components/Main'
 import Authors from '@/components/Authors'
 import Author from '@/components/Author'
 import Blogs from '@/components/Blogs'
+import BlogCreate from '@/components/BlogCreate'
 
 Vue.use(Router)
 
@@ -28,6 +29,11 @@ export default new Router({
       path: '/blogs',
       name: 'Blogs',
       component: Blogs
+    },
+    {
+      path: '/create-blog',
+      name: 'BlogCreate',
+      component: BlogCreate
     }
   ]
 })

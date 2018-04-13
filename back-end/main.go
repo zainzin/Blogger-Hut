@@ -20,6 +20,7 @@ func main() {
 	router.HandleFunc("/recent-blogs", blogRoute.BlogIndex)
 	router.HandleFunc("/blog/{blogId}", blogRoute.OneBlog)
 	router.HandleFunc("/blogs", blogRoute.AllBlogs)
+	router.HandleFunc("/create-blog", blogRoute.CreateBlog).Methods("POST")
 	router.PathPrefix("/").Handler(http.FileServer(http.Dir("./static/")))
 
 	log.Println(http.ListenAndServe(":3000", handlers.CORS(handlers.AllowedHeaders([]string{"X-Requested-With", "Content-Type", "Authorization"}),
